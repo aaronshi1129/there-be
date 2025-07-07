@@ -1,0 +1,554 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>There Be</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .draggable {
+            cursor: grab;
+            user-select: none;
+        }
+        .draggable:active {
+            cursor: grabbing;
+        }
+        .droppable {
+            transition: all 0.2s ease;
+        }
+        .droppable.highlight {
+            background-color: #e0f2fe !important;
+            transform: scale(1.02);
+        }
+        .warning {
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        .success-animation {
+            animation: success-pulse 0.5s;
+        }
+        @keyframes success-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .shuffle-animation {
+            animation: shuffle 0.8s ease-in-out;
+        }
+        @keyframes shuffle {
+            0% { transform: translateX(0) translateY(0) rotate(0deg); }
+            25% { transform: translateX(10px) translateY(-10px) rotate(5deg); }
+            50% { transform: translateX(-5px) translateY(5px) rotate(-3deg); }
+            75% { transform: translateX(5px) translateY(-5px) rotate(2deg); }
+            100% { transform: translateX(0) translateY(0) rotate(0deg); }
+        }
+        .main-content {
+            flex: 1;
+        }
+        footer {
+            margin-top: auto;
+        }
+        .sentence-card {
+            transition: all 0.3s ease;
+        }
+        .sentence-card:hover {
+            transform: translateY(-3px);
+        }
+        .explanation-box {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        .explanation-box.show {
+            max-height: 1000px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content container mx-auto px-4 py-8 max-w-6xl">
+        <h1 class="text-3xl font-bold text-center text-indigo-700 mb-2">There Be vs. Have</h1>
+        <p class="text-center text-gray-600 mb-4">Learn the difference between existence (There be) and possession (Have)</p>
+        
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-xl font-bold text-indigo-600 mb-3">Understanding "There Be" vs. "Have"</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-blue-700 mb-2">"There Be" - Existence/Location</h3>
+                    <p class="mb-2">Used to express that something exists or is located somewhere.</p>
+                    <p class="text-sm text-gray-600">「There be」用來表達某物存在或位於某處。</p>
+                    <div class="mt-3 bg-blue-100 p-3 rounded">
+                        <p><span class="font-bold">Examples:</span></p>
+                        <ul class="list-disc pl-5 mt-1">
+                            <li>There is a book on the table.</li>
+                            <li>There are three students in the classroom.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-green-700 mb-2">"Have" - Possession</h3>
+                    <p class="mb-2">Used to express that someone owns or possesses something.</p>
+                    <p class="text-sm text-gray-600">「Have」用來表達某人擁有或持有某物。</p>
+                    <div class="mt-3 bg-green-100 p-3 rounded">
+                        <p><span class="font-bold">Examples:</span></p>
+                        <ul class="list-disc pl-5 mt-1">
+                            <li>I have a book.</li>
+                            <li>The school has three students.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 bg-yellow-50 p-4 rounded-lg">
+                <h3 class="font-bold text-yellow-700 mb-2">Key Differences:</h3>
+                <ul class="list-disc pl-5">
+                    <li class="mb-2">
+                        <span class="font-semibold">"There be"</span> focuses on existence or presence in a location.
+                        <br><span class="text-sm text-gray-600">「There be」強調某物在某處的存在或出現。</span>
+                    </li>
+                    <li class="mb-2">
+                        <span class="font-semibold">"Have"</span> focuses on ownership or possession by someone.
+                        <br><span class="text-sm text-gray-600">「Have」強調某人對某物的擁有或持有。</span>
+                    </li>
+                    <li>
+                        <span class="font-semibold">Subject difference:</span> "There" is the grammatical subject in "There be" sentences, while the owner is the subject in "Have" sentences.
+                        <br><span class="text-sm text-gray-600">主詞差異：「There be」句型中，「There」是語法主詞；而「Have」句型中，擁有者是主詞。</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <button id="toggleExplanation" class="mt-4 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-semibold py-2 px-4 rounded transition-colors">
+                Show More Details
+            </button>
+            
+            <div id="explanationBox" class="explanation-box mt-4 bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-bold text-gray-700 mb-2">Grammar Details:</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="font-semibold text-indigo-600">Forms of "There Be":</h4>
+                        <ul class="list-disc pl-5 mt-1">
+                            <li>Singular: There is (There's)</li>
+                            <li>Plural: There are</li>
+                            <li>Past singular: There was</li>
+                            <li>Past plural: There were</li>
+                            <li>Future: There will be</li>
+                            <li>Present perfect: There has/have been</li>
+                        </ul>
+                        <p class="mt-2 text-sm text-gray-600">「There be」的形式會根據後面名詞的單複數而變化。</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-green-600">Forms of "Have":</h4>
+                        <ul class="list-disc pl-5 mt-1">
+                            <li>I/You/We/They have</li>
+                            <li>He/She/It has</li>
+                            <li>Past: had</li>
+                            <li>Future: will have</li>
+                            <li>Present perfect: have/has had</li>
+                        </ul>
+                        <p class="mt-2 text-sm text-gray-600">「Have」的形式會根據主詞的人稱和數量而變化。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Section -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-center text-indigo-700 mb-6">Practice Game</h2>
+            <p class="text-center mb-6">Drag each sentence to the correct category: "There Be" or "Have"</p>
+            
+            <div class="flex flex-wrap justify-center gap-4 mb-8" id="sentences-container">
+                <!-- Sentences will be added here by JavaScript -->
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div id="there-be-container" class="droppable bg-blue-100 p-4 rounded-lg shadow-md min-h-[200px]">
+                    <h3 class="text-xl font-bold text-blue-700 mb-4 text-center">"There Be" Sentences</h3>
+                    <div class="sentences-drop-area min-h-[150px]"></div>
+                </div>
+                
+                <div id="have-container" class="droppable bg-green-100 p-4 rounded-lg shadow-md min-h-[200px]">
+                    <h3 class="text-xl font-bold text-green-700 mb-4 text-center">"Have" Sentences</h3>
+                    <div class="sentences-drop-area min-h-[150px]"></div>
+                </div>
+            </div>
+            
+            <div class="flex justify-center gap-4">
+                <button id="checkAnswers" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow transition-colors">
+                    Check Answers
+                </button>
+                <button id="newGame" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg shadow transition-colors">
+                    New Sentences
+                </button>
+            </div>
+        </div>
+        
+        <!-- Fill in the Blanks Game -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-center text-indigo-700 mb-6">Fill in the Blanks</h2>
+            <p class="text-center mb-6">Choose the correct form: "There is/are" or "have/has"</p>
+            
+            <div id="fill-blanks-container" class="space-y-6">
+                <!-- Fill in the blanks questions will be added here by JavaScript -->
+            </div>
+            
+            <div class="flex justify-center mt-6">
+                <button id="checkBlanks" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow transition-colors">
+                    Check Answers
+                </button>
+                <button id="newBlanks" class="ml-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg shadow transition-colors">
+                    New Questions
+                </button>
+            </div>
+        </div>
+        
+        <!-- Score Section -->
+        <div class="bg-gradient-to-r from-indigo-100 to-purple-100 rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-center text-indigo-700 mb-4">Your Progress</h2>
+            <div class="flex justify-center items-center gap-8">
+                <div class="text-center">
+                    <p class="text-gray-600 mb-1">Correct Answers</p>
+                    <p id="correctScore" class="text-4xl font-bold text-emerald-600">0</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-gray-600 mb-1">Questions Attempted</p>
+                    <p id="totalAttempts" class="text-4xl font-bold text-indigo-600">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="bg-indigo-800 text-indigo-100 py-6 mt-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0">
+                <!-- Links -->
+                <div class="flex items-center space-x-4">
+                    <a href="https://www.aaronshi.cc" target="_blank" rel="noopener noreferrer" class="flex items-center hover:text-white transition duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        Go to AaronShi.cc
+                    </a>
+                    <span class="text-indigo-300">|</span>
+                    <a href="https://app.aaronshi.cc" target="_blank" rel="noopener noreferrer" class="flex items-center hover:text-white transition duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        Back to AaronShi.cc App
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle explanation box
+            const toggleBtn = document.getElementById('toggleExplanation');
+            const explanationBox = document.getElementById('explanationBox');
+            
+            toggleBtn.addEventListener('click', function() {
+                explanationBox.classList.toggle('show');
+                toggleBtn.textContent = explanationBox.classList.contains('show') ? 
+                    'Hide Details' : 'Show More Details';
+            });
+            
+            // Game data
+            const sentences = [
+                { text: "There is a cat in the garden.", type: "there-be" },
+                { text: "I have a new computer.", type: "have" },
+                { text: "There are five books on the shelf.", type: "there-be" },
+                { text: "She has three brothers.", type: "have" },
+                { text: "There was a party last night.", type: "there-be" },
+                { text: "They have a beautiful house.", type: "have" },
+                { text: "There will be a meeting tomorrow.", type: "there-be" },
+                { text: "He has a lot of experience.", type: "have" },
+                { text: "There are many stars in the sky.", type: "there-be" },
+                { text: "We have two cars.", type: "have" },
+                { text: "There is some milk in the fridge.", type: "there-be" },
+                { text: "The company has fifty employees.", type: "have" }
+            ];
+            
+            const fillBlanksQuestions = [
+                {
+                    text: "_____ a dog in the yard.",
+                    options: ["There is", "There are", "I have", "She has"],
+                    answer: "There is",
+                    explanation: "We use 'There is' because we're talking about the existence of a single dog (singular) in a location."
+                },
+                {
+                    text: "She _____ two sisters.",
+                    options: ["there is", "there are", "has", "have"],
+                    answer: "has",
+                    explanation: "We use 'has' because 'she' is the subject who possesses or owns something."
+                },
+                {
+                    text: "_____ many people at the concert.",
+                    options: ["There is", "There are", "I have", "They have"],
+                    answer: "There are",
+                    explanation: "We use 'There are' because we're talking about the existence of multiple people (plural) in a location."
+                },
+                {
+                    text: "We _____ a meeting at 3 PM.",
+                    options: ["there is", "there are", "has", "have"],
+                    answer: "have",
+                    explanation: "We use 'have' because 'we' is the subject who possesses or participates in the meeting."
+                },
+                {
+                    text: "_____ any water left in the bottle?",
+                    options: ["There is", "There are", "Do you have", "Does he have"],
+                    answer: "Is there",
+                    explanation: "We use 'Is there' (question form of 'There is') because we're asking about the existence of water (uncountable) in a location."
+                },
+                {
+                    text: "The teacher _____ a new book.",
+                    options: ["there is", "there are", "has", "have"],
+                    answer: "has",
+                    explanation: "We use 'has' because 'the teacher' is the subject who possesses the book."
+                }
+            ];
+            
+            let gameScore = {
+                correct: 0,
+                total: 0
+            };
+            
+            // Initialize drag and drop game
+            function initDragDropGame() {
+                const sentencesContainer = document.getElementById('sentences-container');
+                sentencesContainer.innerHTML = '';
+                
+                // Shuffle and select 6 sentences
+                const shuffledSentences = [...sentences].sort(() => 0.5 - Math.random()).slice(0, 6);
+                
+                shuffledSentences.forEach((sentence, index) => {
+                    const sentenceEl = document.createElement('div');
+                    sentenceEl.className = 'sentence-card draggable bg-white p-4 rounded-lg shadow-md text-center text-gray-800 w-64 flex items-center justify-center cursor-grab';
+                    sentenceEl.setAttribute('draggable', 'true');
+                    sentenceEl.setAttribute('data-type', sentence.type);
+                    sentenceEl.setAttribute('data-id', index);
+                    sentenceEl.innerHTML = sentence.text;
+                    sentencesContainer.appendChild(sentenceEl);
+                    
+                    // Add drag events
+                    sentenceEl.addEventListener('dragstart', dragStart);
+                });
+                
+                // Reset drop areas
+                document.querySelectorAll('.sentences-drop-area').forEach(area => {
+                    area.innerHTML = '';
+                });
+            }
+            
+            // Initialize fill in the blanks game
+            function initFillBlanksGame() {
+                const fillBlanksContainer = document.getElementById('fill-blanks-container');
+                fillBlanksContainer.innerHTML = '';
+                
+                // Shuffle and select questions
+                const shuffledQuestions = [...fillBlanksQuestions].sort(() => 0.5 - Math.random()).slice(0, 4);
+                
+                shuffledQuestions.forEach((question, index) => {
+                    const questionEl = document.createElement('div');
+                    questionEl.className = 'bg-gray-50 p-4 rounded-lg';
+                    
+                    let optionsHTML = '';
+                    question.options.forEach((option, optIndex) => {
+                        optionsHTML += `
+                            <label class="inline-flex items-center mr-4 mb-2">
+                                <input type="radio" name="question-${index}" value="${option}" class="form-radio h-5 w-5 text-indigo-600">
+                                <span class="ml-2">${option}</span>
+                            </label>
+                        `;
+                    });
+                    
+                    questionEl.innerHTML = `
+                        <p class="mb-3 text-lg">${index + 1}. ${question.text}</p>
+                        <div class="ml-4">${optionsHTML}</div>
+                        <div class="answer-feedback mt-2 hidden"></div>
+                    `;
+                    
+                    fillBlanksContainer.appendChild(questionEl);
+                });
+            }
+            
+            // Drag and drop functionality
+            function dragStart(e) {
+                e.dataTransfer.setData('text/plain', e.target.getAttribute('data-id'));
+                e.dataTransfer.setData('type', e.target.getAttribute('data-type'));
+                setTimeout(() => {
+                    e.target.classList.add('opacity-50');
+                }, 0);
+            }
+            
+            document.querySelectorAll('.droppable').forEach(dropZone => {
+                dropZone.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    dropZone.classList.add('highlight');
+                });
+                
+                dropZone.addEventListener('dragleave', () => {
+                    dropZone.classList.remove('highlight');
+                });
+                
+                dropZone.addEventListener('drop', e => {
+                    e.preventDefault();
+                    dropZone.classList.remove('highlight');
+                    
+                    const id = e.dataTransfer.getData('text/plain');
+                    const type = e.dataTransfer.getData('type');
+                    const draggedElement = document.querySelector(`.draggable[data-id="${id}"]`);
+                    
+                    if (draggedElement) {
+                        const dropArea = dropZone.querySelector('.sentences-drop-area');
+                        dropArea.appendChild(draggedElement);
+                        draggedElement.classList.remove('opacity-50');
+                        draggedElement.classList.add('mb-2');
+                    }
+                });
+            });
+            
+            // Check drag and drop answers
+            document.getElementById('checkAnswers').addEventListener('click', () => {
+                const thereBeDrop = document.querySelector('#there-be-container .sentences-drop-area');
+                const haveDrop = document.querySelector('#have-container .sentences-drop-area');
+                
+                let allCorrect = true;
+                let checked = 0;
+                
+                // Check "There Be" container
+                thereBeDrop.querySelectorAll('.draggable').forEach(item => {
+                    const type = item.getAttribute('data-type');
+                    if (type === 'there-be') {
+                        item.classList.add('bg-green-100', 'success-animation');
+                        gameScore.correct++;
+                    } else {
+                        item.classList.add('bg-red-100', 'warning');
+                        allCorrect = false;
+                    }
+                    checked++;
+                });
+                
+                // Check "Have" container
+                haveDrop.querySelectorAll('.draggable').forEach(item => {
+                    const type = item.getAttribute('data-type');
+                    if (type === 'have') {
+                        item.classList.add('bg-green-100', 'success-animation');
+                        gameScore.correct++;
+                    } else {
+                        item.classList.add('bg-red-100', 'warning');
+                        allCorrect = false;
+                    }
+                    checked++;
+                });
+                
+                gameScore.total += checked;
+                updateScore();
+                
+                if (allCorrect && checked > 0) {
+                    showMessage('Great job! All sentences are correctly categorized!', 'success');
+                } else if (checked === 0) {
+                    showMessage('Please drag some sentences to the containers first.', 'warning');
+                } else {
+                    showMessage('Some sentences are not in the right category. Try again!', 'error');
+                }
+            });
+            
+            // New drag and drop game
+            document.getElementById('newGame').addEventListener('click', () => {
+                initDragDropGame();
+            });
+            
+            // Check fill in the blanks answers
+            document.getElementById('checkBlanks').addEventListener('click', () => {
+                const fillBlanksContainer = document.getElementById('fill-blanks-container');
+                const questions = fillBlanksContainer.querySelectorAll('.bg-gray-50');
+                let correct = 0;
+                let attempted = 0;
+                
+                questions.forEach((question, index) => {
+                    const selectedOption = question.querySelector('input[type="radio"]:checked');
+                    const feedbackEl = question.querySelector('.answer-feedback');
+                    
+                    if (selectedOption) {
+                        attempted++;
+                        const userAnswer = selectedOption.value;
+                        const correctAnswer = fillBlanksQuestions[index].answer;
+                        const explanation = fillBlanksQuestions[index].explanation;
+                        
+                        feedbackEl.classList.remove('hidden');
+                        
+                        if (userAnswer === correctAnswer) {
+                            feedbackEl.innerHTML = `<p class="text-green-600">✓ Correct! ${explanation}</p>`;
+                            feedbackEl.classList.add('bg-green-50', 'p-2', 'rounded');
+                            correct++;
+                        } else {
+                            feedbackEl.innerHTML = `<p class="text-red-600">✗ Incorrect. The correct answer is "${correctAnswer}". ${explanation}</p>`;
+                            feedbackEl.classList.add('bg-red-50', 'p-2', 'rounded');
+                        }
+                    }
+                });
+                
+                gameScore.correct += correct;
+                gameScore.total += attempted;
+                updateScore();
+                
+                if (attempted === 0) {
+                    showMessage('Please answer at least one question.', 'warning');
+                } else if (correct === attempted) {
+                    showMessage('Perfect! All your answers are correct!', 'success');
+                } else {
+                    showMessage(`You got ${correct} out of ${attempted} correct.`, 'info');
+                }
+            });
+            
+            // New fill in the blanks game
+            document.getElementById('newBlanks').addEventListener('click', () => {
+                initFillBlanksGame();
+            });
+            
+            // Update score display
+            function updateScore() {
+                document.getElementById('correctScore').textContent = gameScore.correct;
+                document.getElementById('totalAttempts').textContent = gameScore.total;
+            }
+            
+            // Show message
+            function showMessage(message, type) {
+                // Create message element
+                const messageEl = document.createElement('div');
+                messageEl.className = `fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg z-50 ${
+                    type === 'success' ? 'bg-green-500 text-white' :
+                    type === 'error' ? 'bg-red-500 text-white' :
+                    type === 'warning' ? 'bg-yellow-500 text-white' :
+                    'bg-blue-500 text-white'
+                }`;
+                messageEl.textContent = message;
+                document.body.appendChild(messageEl);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    messageEl.classList.add('opacity-0', 'transition-opacity');
+                    setTimeout(() => {
+                        document.body.removeChild(messageEl);
+                    }, 500);
+                }, 3000);
+            }
+            
+            // Initialize games
+            initDragDropGame();
+            initFillBlanksGame();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'95b4fc9771a18458',t:'MTc1MTg2NjYxMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
